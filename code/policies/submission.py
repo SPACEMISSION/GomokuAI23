@@ -17,7 +17,12 @@ class HeuristicGomokuAI:
     def evaluate_position(self, board, x, y, player_index):
         position_score = 0
         directions = [(1,0), (0,1), (1,1), (1,-1)]
-        # ... rest of the method ...
+        for dx, dy in directions:
+            line_length, open_ends, blocked_ends, four_in_a_row, three_in_a_row = self.check_line(board, x, y, dx, dy, player_index)
+            # existing scoring logic...
+            position_score += four_in_a_row * 500  # new scoring for four-in-a-row
+            position_score += three_in_a_row * 300  # new scoring for three-in-a-row
+        return position_score
 
     def get_possible_moves(self, board):
         possible_moves = []
