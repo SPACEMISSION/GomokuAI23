@@ -38,7 +38,7 @@ class Submission:
     def __call__(self, state):
         current_player = state.current_player()  # Determine the current player from the state
         valid_moves = state.valid_actions()  # Get valid moves
-        return self.heuristic_ai.select_best_move(state.board, current_player, self.heuristic_ai.generate_moves(state.board, valid_moves))
+        return self.heuristic_ai.select_random_move(state.board, current_player, self.heuristic_ai.generate_moves(state.board, valid_moves))
 
 
 # Assuming that the `state` object has a `current_player()` method and a `board` attribute
