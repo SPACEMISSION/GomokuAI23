@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import random
 
@@ -5,6 +6,9 @@ class HeuristicGomokuAI:
     def __init__(self, board_size, win_size):
         self.board_size = board_size
         self.win_size = win_size
+        self.max_depth = 1
+        self.start_time = time.time()
+        self.time_limit = 10
 
     def evaluate_board(self, board, player_index):
         score = 0
@@ -26,6 +30,40 @@ class HeuristicGomokuAI:
             elif line_length == 2 and open_ends == 2:
                 position_score += 20
         return position_score
+    
+    def iterative_deepening(self, board, player_index):
+        best_move = None
+        best_score = float('-inf')
+
+        while True:  # Continue until time runs out or maximum depth is reached
+            score, move = self.minimax(board, self.max_depth, player_index)
+            if score > best_score:
+                best_score = score
+                best_move = move
+            self.max_depth += 1
+
+            # Break the loop if time runs out or maximum depth is reached
+            if time.time() - self.start_time > self.time_limit or self.max_depth > self.board_size:
+                break
+
+        return best_move
+    
+    def minimax(self, board, depth, player_index):
+        if depth == 0 or self.game_over(board):
+            return self.evaluate_board(board, player_index), None
+
+        best_score = float('-inf')
+        best_move = None
+
+        for move in self.get_possible_moves(board):
+            new_board = self.make_move(board, move, player_index)
+            score, _ = self.minimax(new_board, depth - 1, 1 - player_index)
+            if score > best_score:
+                best_score = score
+                best_move = move
+
+        return best_score, best_move
+
 
     def check_line(self, board, x, y, dx, dy, player_index):
         line_length = 0
